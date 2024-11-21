@@ -1,0 +1,50 @@
+// Define the pin connected to the touchpad OUT pin
+#define touchPin 1 // OUT pin of the touchpad connected to D2 on Arduino
+
+// Variables to track the touchpad state
+bool currentState = LOW; // Current state of the touchpad
+bool lastState = LOW;    // Previous state of the touchpad
+bool touched = false;
+int counter = 0;
+
+void setup() {
+  // Set the touch pin as input
+  pinMode(touchPin, INPUT);
+
+  // Initialize Serial Monitor for debugging
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read the current state of the touchpad
+  isTouched();
+  if (touched){
+      if (counter == 1){
+      Serial.println("first time Button Press!");
+    } else if(counter == 3){
+      Serial.println("second time Button Press!");
+    } else if(counter==6){
+      Serial.println("third time Button Press!");
+    }
+  }
+  
+  
+}
+
+void isTouched(){
+  currentState = digitalRead(touchPin);
+
+  // Detect state change from not-touched (LOW) to touched (HIGH)
+  if (currentState == HIGH && lastState == LOW) {
+    //Serial.println("Button Press Detected!");
+    touched = true;
+    counter++;
+    // Add any action you want to perform on a single press here
+  }
+
+  // Update the last state to the current state
+  lastState = currentState;
+
+  // Small delay for stability
+  delay(100);
+}
