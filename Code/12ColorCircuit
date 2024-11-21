@@ -1,0 +1,46 @@
+void displayColorRing() {
+  // Set the MQTT topic
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/pixel/", 35);
+
+  // RGB values for the color wheel (12 segments)
+  int colorRing[12][3] = {
+    {255, 0, 0},     // Red
+    {255, 128, 0},   // Orange
+    {255, 255, 0},   // Yellow
+    {128, 255, 0},   // Yellow-green
+    {0, 255, 0},     // Green
+    {0, 255, 128},   // Cyan-green
+    {0, 255, 255},   // Cyan
+    {0, 128, 255},   // Blue-green
+    {0, 0, 255},     // Blue
+    {128, 0, 255},   // Blue-purple
+    {255, 0, 255},   // Purple
+    {255, 0, 128}    // Red-purple
+  };
+
+  // Iterate over each light and set its color
+  for (int pixelId = 0; pixelId < 12; pixelId++) {
+    int R = colorRing[pixelId][0];
+    int G = colorRing[pixelId][1];
+    int B = colorRing[pixelId][2];
+
+    for (int pixelId = 0; pixelId < 12; pixelId++) {
+      // Send the MQTT message
+      char mqtt_message[100];
+      sprintf(mqtt_message, "{\"pixelid\": %d, \"R\": %d, \"G\": %d, \"B\": %d, \"W\": 0}", pixelId, R, G, B);
+
+      // Publish the MQTT message to the topic
+      if (client.publish(mqtt_topic_demo, mqtt_message, false)) {
+        Serial.print(counter);
+        // Serial.print(pixelId);
+        // Serial.println(" updated successfully.");
+      } else {
+        Serial.println("Failed to update pixel");
+      }
+
+      delay(200); // Delay between setting each light
+    }
+
+    delay(1000); // Wait 1 second after completing one color
+  }
+}
