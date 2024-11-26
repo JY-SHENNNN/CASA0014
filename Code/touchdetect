@@ -1,0 +1,118 @@
+// Define touch sensor pins
+#define touchPin1 2  // First touch sensor
+#define touchPin2 3  // Second touch sensor
+
+// Time thresholds
+#define DOUBLE_TAP_TIME 300  // Maximum time between two taps for double click
+#define SWIPE_TIME 500       // Maximum time to detect swipe
+
+// Variables for state tracking
+bool touchState1 = LOW, touchState2 = LOW;
+bool lastState1 = LOW, lastState2 = LOW;
+bool isClick1 = false, isClick2 = false;
+bool isDoubleClick1 = false, isDoubleClick2 = false;
+bool isSwipeLeftToRight = false, isSwipeRightToLeft = false;
+
+// Function declarations
+void detectSingleOrDoubleClickAndSwipe();
+
+void setup() {
+  pinMode(touchPin1, INPUT);
+  pinMode(touchPin2, INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  touchState1 = digitalRead(touchPin1);
+  touchState2 = digitalRead(touchPin2);
+
+  detectSingleOrDoubleClickAndSwipe();
+
+  lastState1 = touchState1;
+  lastState2 = touchState2;
+
+  delay(50);  // Stability delay
+}
+
+void detectSingleOrDoubleClickAndSwipe() {
+  static unsigned long lastClickTime1 = 0, lastClickTime2 = 0;
+  static unsigned long touch1Time = 0, touch2Time = 0;
+  static bool pendingSingleClick1 = false, pendingSingleClick2 = false;
+
+  unsigned long currentTime = millis();
+
+  // Detect clicks on sensor 1
+  if (touchState1 == HIGH && lastState1 == LOW) {
+    if (currentTime - lastClickTime1 < DOUBLE_TAP_TIME) {
+      isDoubleClick1 = true;
+      pendingSingleClick1 = false;  // Cancel pending single click
+    } else {
+      pendingSingleClick1 = true;
+      touch1Time = currentTime;  // Record for swipe
+    }
+    lastClickTime1 = currentTime;
+  }
+
+  // Detect clicks on sensor 2
+  if (touchState2 == HIGH && lastState2 == LOW) {
+    if (currentTime - lastClickTime2 < DOUBLE_TAP_TIME) {
+      isDoubleClick2 = true;
+      pendingSingleClick2 = false;  // Cancel pending single click
+    } else {
+      pendingSingleClick2 = true;
+      touch2Time = currentTime;  // Record for swipe
+    }
+    lastClickTime2 = currentTime;
+  }
+
+  // Process swipe detection
+  if (touch1Time > 0 && touch2Time > 0) {
+    if (touch2Time > touch1Time && (touch2Time - touch1Time < SWIPE_TIME)) {
+      isSwipeLeftToRight = true;
+      pendingSingleClick1 = false;
+      pendingSingleClick2 = false;
+    } else if (touch1Time > touch2Time && (touch1Time - touch2Time < SWIPE_TIME)) {
+      isSwipeRightToLeft = true;
+      pendingSingleClick1 = false;
+      pendingSingleClick2 = false;
+    }
+    touch1Time = 0;
+    touch2Time = 0;
+  }
+
+  // Process pending single clicks after delay
+  if (pendingSingleClick1 && currentTime - lastClickTime1 >= DOUBLE_TAP_TIME) {
+    isClick1 = true;
+    pendingSingleClick1 = false;  // Clear pending state
+  }
+
+  if (pendingSingleClick2 && currentTime - lastClickTime2 >= DOUBLE_TAP_TIME) {
+    isClick2 = true;
+    pendingSingleClick2 = false;  // Clear pending state
+  }
+
+  // Output results
+  if (isSwipeLeftToRight) {
+    Serial.println("Swipe Detected: Left to Right!");
+    isSwipeLeftToRight = false;
+  } else if (isSwipeRightToLeft) {
+    Serial.println("Swipe Detected: Right to Left!");
+    isSwipeRightToLeft = false;
+  } else {
+    if (isDoubleClick1) {
+      Serial.println("Double Click Detected on Sensor 1!");
+      isDoubleClick1 = false;
+    } else if (isClick1) {
+      Serial.println("Single Click Detected on Sensor 1!");
+      isClick1 = false;
+    }
+
+    if (isDoubleClick2) {
+      Serial.println("Double Click Detected on Sensor 2!");
+      isDoubleClick2 = false;
+    } else if (isClick2) {
+      Serial.println("Single Click Detected on Sensor 2!");
+      isClick2 = false;
+    }
+  }
+}
