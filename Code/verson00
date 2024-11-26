@@ -1,0 +1,365 @@
+/* 
+  Chrono Lumina Blinker Example for MKR1010
+*/
+
+// Include necessary libraries
+#include <WiFiNINA.h>
+#include <PubSubClient.h>
+#include <utility/wifi_drv.h>   // Library to drive the RGB LED on the MKR1010
+#include "arduino_secrets.h"    // Include sensitive data from arduino_secrets.h
+
+#define touchPin1 2  // First touch sensor connected to D2
+#define touchPin2 3  // Second touch sensor connected to D3
+
+// Time thresholds
+#define DOUBLE_TAP_TIME 300  // Maximum time between two taps for double click
+#define SWIPE_TIME 500       // Maximum time to detect swipe
+
+// Variables for state tracking
+bool touchState1 = LOW, touchState2 = LOW;
+bool lastState1 = LOW, lastState2 = LOW;
+bool isClick1 = false, isClick2 = false;
+bool isDoubleClick1 = false, isDoubleClick2 = false;
+bool isSwipeLeftToRight = false, isSwipeRightToLeft = false;
+
+
+// WiFi credentials
+const char* ssid          = SECRET_SSID;
+const char* password      = SECRET_PASS;
+const char* mqtt_username = SECRET_MQTTUSER;
+const char* mqtt_password = SECRET_MQTTPASS;
+
+// MQTT configuration
+const char* mqtt_server = "mqtt.cetools.org";
+const int mqtt_port = 1884;
+int status = WL_IDLE_STATUS;  // WiFi radio's status
+
+// Define WiFi and MQTT clients
+WiFiServer server(80);
+WiFiClient wificlient;
+WiFiClient mkrClient;
+PubSubClient client(mkrClient);
+
+// MQTT topic for the light
+char mqtt_topic_demo[100];
+char mqtt_message[100];
+
+void setup() {
+  Serial.begin(115200);  // Start the serial monitor to show output
+  delay(1000);
+
+  WiFi.setHostname("Lumina zczqjs2");
+  startWifi();
+
+  client.setServer(mqtt_server, mqtt_port);
+  Serial.println("Setup complete");
+  clearLight();
+  pinMode(touchPin1, INPUT);
+  pinMode(touchPin2, INPUT);
+}
+
+void loop() {
+  // Ensure the Arduino is connected to the MQTT broker
+  if (!client.connected()) {
+    reconnectMQTT();
+  }
+
+  // Ensure we are connected to the WiFi
+  if (WiFi.status() != WL_CONNECTED) {
+    startWifi();
+  }
+
+  touchState1 = digitalRead(touchPin1);
+  touchState2 = digitalRead(touchPin2);
+
+  detectSingleOrDoubleClickAndSwipe();
+
+  lastState1 = touchState1;
+  lastState2 = touchState2;
+
+  // Add a small delay for stability
+  delay(10);
+  // Serial.println("Sent a message");
+  // delay(100);  // Adjust delay for smoother operation
+}
+
+/* --- WiFi Functions --- */
+
+void startWifi() {
+  if (WiFi.status() == WL_NO_MODULE) {
+    Serial.println("Communication with WiFi module failed!");
+    while (true);  // Stop execution if WiFi module fails
+  }
+
+  String fv = WiFi.firmwareVersion();
+  if (fv < WIFI_FIRMWARE_LATEST_VERSION) {
+    Serial.println("Please upgrade the firmware");
+  }
+
+  int n = WiFi.scanNetworks();
+  Serial.println("Scan done");
+  if (n == 0) {
+    Serial.println("No networks found");
+  } else {
+    Serial.print(n);
+    Serial.println(" networks found");
+    Serial.print("Trying to connect to: ");
+    Serial.println(ssid);
+
+    for (int i = 0; i < n; ++i) {
+      String availablessid = WiFi.SSID(i);
+      if (availablessid.equals(ssid)) {
+        Serial.print("Connecting to ");
+        Serial.println(ssid);
+        WiFi.begin(ssid, password);
+
+        while (WiFi.status() != WL_CONNECTED) {
+          delay(600);
+          Serial.print(".");
+        }
+
+        if (WiFi.status() == WL_CONNECTED) {
+          Serial.println("Connected to " + String(ssid));
+          break;
+        } else {
+          Serial.println("Failed to connect to " + String(ssid));
+        }
+      } else {
+        Serial.print(availablessid);
+        Serial.println(" - this network is not in my list");
+      }
+    }
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+/* --- MQTT Functions --- */
+
+void reconnectMQTT() {
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    String clientId = "LuminaSelector";
+    clientId += String(random(0xffff), HEX);
+
+    if (client.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
+      Serial.println("Connected");
+    } else {
+      Serial.print("Failed, rc=");
+      Serial.print(client.state());
+      Serial.println(". Try again in 5 seconds");
+      delay(5000);
+    }
+  }
+}
+
+void callback(char* topic, byte* payload, int length) {
+  // Handle incoming messages
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("]: ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+bool publishMessage(const char* topic, const char* message) {
+  if (client.publish(topic, message, false)) {
+    Serial.println("Message published");
+    return true;
+  } else {
+    Serial.println("Failed to publish message");
+    return false;
+  }
+}
+
+/* --- Light Control Functions --- */
+void defaultLight(){
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/all/", 35);
+  char mqtt_message[100];
+  sprintf(mqtt_message, "{\"method\": \"pulsewhite\"}");
+  delay(10);
+  publishMessage(mqtt_topic_demo, mqtt_message);
+}
+
+void clearLight() {
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/all/", 35);
+  sprintf(mqtt_message, "{\"method\": \"clear\"}");
+  delay(10);
+  publishMessage(mqtt_topic_demo, mqtt_message);
+}
+
+void sendmqttgreen() {
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/pixel/", 35);
+  for (int j = 0; j < 12; j += 2) {
+    sprintf(mqtt_message, "{\"pixelid\": %d, \"R\": 255, \"G\": 255, \"B\": 0, \"W\": 0}", j);
+    delay(10);
+    publishMessage(mqtt_topic_demo, mqtt_message);
+  }
+}
+
+void sendmqttred() {
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/pixel/", 35);
+  for (int j = 0; j < 12; j++) {
+    sprintf(mqtt_message, "{\"pixelid\": %d, \"R\": 255, \"G\": 0, \"B\": 0, \"W\": 0}", j);
+    delay(10);
+    publishMessage(mqtt_topic_demo, mqtt_message);
+  }
+}
+
+void sendmqttrandom() {
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/all/", 35);
+  sprintf(mqtt_message, "{\"method\": \"allrandom\"}");
+  delay(10);
+  publishMessage(mqtt_topic_demo, mqtt_message);
+
+}
+
+void sendmqttbrightness() {
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/brightness/", 35);
+  sprintf(mqtt_message, "{\"brightness\": %d}", 110);
+  publishMessage(mqtt_topic_demo, mqtt_message);
+}
+
+void displayColorRing() {
+  // Set the MQTT topic
+  sprintf(mqtt_topic_demo, "student/CASA0014/light/%d/pixel/", 35);
+
+  // RGB values for the color wheel (12 segments)
+  int colorRing[12][3] = {
+    {255, 0, 0},     // Red
+    {255, 128, 0},   // Orange
+    {255, 255, 0},   // Yellow
+    {128, 255, 0},   // Yellow-green
+    {0, 255, 0},     // Green
+    {0, 255, 128},   // Cyan-green
+    {0, 255, 255},   // Cyan
+    {0, 128, 255},   // Blue-green
+    {0, 0, 255},     // Blue
+    {128, 0, 255},   // Blue-purple
+    {255, 0, 255},   // Purple
+    {255, 0, 128}    // Red-purple
+  };
+
+  // Iterate over each light and set its color
+  for (int pixelId = 0; pixelId < 12; pixelId++) {
+    int R = colorRing[pixelId][0];
+    int G = colorRing[pixelId][1];
+    int B = colorRing[pixelId][2];
+
+    for (int pixelId = 0; pixelId < 12; pixelId++) {
+      // Send the MQTT message
+      char mqtt_message[100];
+      sprintf(mqtt_message, "{\"pixelid\": %d, \"R\": %d, \"G\": %d, \"B\": %d, \"W\": 0}", pixelId, R, G, B);
+
+      // Publish the MQTT message to the topic
+      if (client.publish(mqtt_topic_demo, mqtt_message, false)) {
+        Serial.print(counter);
+        // Serial.print(pixelId);
+        // Serial.println(" updated successfully.");
+      } else {
+        Serial.println("Failed to update pixel");
+      }
+    }
+
+    delay(10); // Wait 1 second after completing one color
+  }
+}
+
+/* --- Sensor Functions --- */
+void detectSingleOrDoubleClickAndSwipe() {
+  static unsigned long lastClickTime1 = 0, lastClickTime2 = 0;
+  static unsigned long touch1Time = 0, touch2Time = 0;
+  static bool pendingSingleClick1 = false, pendingSingleClick2 = false;
+
+  unsigned long currentTime = millis();
+
+  // Detect clicks on sensor 1
+  if (touchState1 == HIGH && lastState1 == LOW) {
+    if (currentTime - lastClickTime1 < DOUBLE_TAP_TIME) {
+      isDoubleClick1 = true;
+      pendingSingleClick1 = false;  // Cancel pending single click
+    } else {
+      pendingSingleClick1 = true;
+      touch1Time = currentTime;  // Record for swipe
+    }
+    lastClickTime1 = currentTime;
+  }
+
+  // Detect clicks on sensor 2
+  if (touchState2 == HIGH && lastState2 == LOW) {
+    if (currentTime - lastClickTime2 < DOUBLE_TAP_TIME) {
+      isDoubleClick2 = true;
+      pendingSingleClick2 = false;  // Cancel pending single click
+    } else {
+      pendingSingleClick2 = true;
+      touch2Time = currentTime;  // Record for swipe
+    }
+    lastClickTime2 = currentTime;
+  }
+
+  // Process swipe detection
+  if (touch1Time > 0 && touch2Time > 0) {
+    if (touch2Time > touch1Time && (touch2Time - touch1Time < SWIPE_TIME)) {
+      isSwipeLeftToRight = true;
+      pendingSingleClick1 = false;
+      pendingSingleClick2 = false;
+    } else if (touch1Time > touch2Time && (touch1Time - touch2Time < SWIPE_TIME)) {
+      isSwipeRightToLeft = true;
+      pendingSingleClick1 = false;
+      pendingSingleClick2 = false;
+    }
+    touch1Time = 0;
+    touch2Time = 0;
+  }
+
+  // Process pending single clicks after delay
+  if (pendingSingleClick1 && currentTime - lastClickTime1 >= DOUBLE_TAP_TIME) {
+    isClick1 = true;
+    pendingSingleClick1 = false;  // Clear pending state
+  }
+
+  if (pendingSingleClick2 && currentTime - lastClickTime2 >= DOUBLE_TAP_TIME) {
+    isClick2 = true;
+    pendingSingleClick2 = false;  // Clear pending state
+  }
+
+  // Output results
+  if (isSwipeLeftToRight) {
+    displayColorRing();
+    Serial.println("Swipe Detected: Left to Right!");
+    isSwipeLeftToRight = false;
+  } else if (isSwipeRightToLeft) {
+    Serial.println("Swipe Detected: Right to Left!");
+    isSwipeRightToLeft = false;
+  } else {
+    // priority double click > single click
+    if (isDoubleClick1) {
+      sendmqttrandom();  // Set random light
+      Serial.println("Double Click Detected on Sensor 1: Setting random light!");
+      isDoubleClick1 = false;
+      isClick1 = false;  // avoid single click collision
+    } else if (isClick1) {
+      defaultLight();  // Turn on default light
+      Serial.println("Single Click Detected on Sensor 1: Turning on default light!");
+      isClick1 = false;
+    }
+
+    if (isDoubleClick2) {
+      sendmqttgreen();  // Set green light
+      Serial.println("Double Click Detected on Sensor 2: Setting green light!");
+      isDoubleClick2 = false;
+      isClick2 = false;  // avoid single click collision
+    } else if (isClick2) {
+      clearLight();  // Turn off light
+      Serial.println("Single Click Detected on Sensor 2: Turning off light!");
+      isClick2 = false;
+    }
+  }
+}
+
+
