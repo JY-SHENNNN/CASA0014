@@ -5,3 +5,4 @@ A:But the datasheet shows it should be connnected with 5V, after take VCC as pos
 
 #SECOND
 Q:Multiple event triggered at the same time, overlap problem occurred
+A:Multiple if statement run in same time.
