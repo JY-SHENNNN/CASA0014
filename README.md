@@ -8,5 +8,7 @@ The general idea is to use two touchpads to control the chrono lumina:
   - double click LEFT: all random
   - double click RIGHT: dynamic 12 color circuit
 * swipe
-  - from LEFT to RIGHT: increase brightness
-  - from RIGHT to LEFT: decrease brightness
+  - from LEFT to RIGHT: decrease brightness
+  - from RIGHT to LEFT: increase brightness
+
+# interact with Internet of Things
