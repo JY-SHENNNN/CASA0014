@@ -27,4 +27,11 @@ Every exhibit has a different story, just as our own experiences reveal differen
 * Jump wires
 
 ## System architecture
+Touch Sensors (D2, D3)
+        |
+        v
+Arduino MKR1010 WiFi
+        |
+        v
+WiFi -> MQTT Broker -> Visualized Lights (Color, Brightness)
 
