@@ -31,3 +31,6 @@ Touch Sensors (D2, D3) ->
 Arduino MKR1010 WiFi ->
 WiFi -> MQTT Broker -> Visualized Lights (Color, Brightness)
 ![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/flowchart.png)
+
+## Reference
+1. The electronic graph pruduced by Fritzing, the Arduino mkr1010 wifi part founf through https://forum.fritzing.org/t/pine-a64-esp8266-12e-f-arduino-zero-and-mkr1000-new-fritzing-parts/1611
