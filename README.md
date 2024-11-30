@@ -1,5 +1,6 @@
 # CASA0014
 This is used for CASA0014 Connected Environments 
+![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg)
 ## interact with Internet of Things (Overview)
 * Objective: Enhance user interaction with IoT system through Chrono Lumina light, controlled by touch sensors, reflecting activities in Lab environment
 * Aim: provide visual feedback using dynamic lighting to encourage user enperimentation and exploration with IoT.
