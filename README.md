@@ -31,6 +31,7 @@ Touch Sensors (D2, D3) ->
 Arduino MKR1010 WiFi ->
 WiFi -> MQTT Broker -> Visualized Lights (Color, Brightness)
 ![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/flowchart.png)
+![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/electronicCir.png)
 
 ## Reference
 1. The electronic graph pruduced by Fritzing
