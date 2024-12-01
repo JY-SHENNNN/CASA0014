@@ -1,11 +1,11 @@
 # CASA0014
-This is used for CASA0014 Connected Environments 
-<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Image" width="150" align="right">
+This is used for CASA0014 Connected Environments
+<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Image" height="50" align="right">
 
 ## Interact with Internet of Things (Overview)
 * **Objective**: Enhance user interaction with IoT system through Chrono Lumina light, controlled by touch sensors, reflecting activities in Lab environment.
 * **Aim**: Provide visual feedback using dynamic lighting to encourage user experimentation and exploration with IoT.
-<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Rotated Image" height="150" align="right">
+<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Rotated Image" height="100" align="right">
 
 ## Interaction Mode
 The general idea is to use two touchpads to control the chrono lumina, which reflects the current thinking in mind.
