@@ -29,7 +29,7 @@ The general idea is to use two touchpads to control the chrono lumina, which ref
 * single click: No idea or offline
   - single click 1: turn on the default light
   - single click 2: turn off the all light
-* double click: researching or brainstorming to finish
+* double click: researching or brainstorming to complete
   - double click 1: all random
   - double click 2: dynamic 12 color circuit
 * swipe: more clearer idea or idea but with problem
