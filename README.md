@@ -8,7 +8,7 @@ This is used for CASA0014 Connected Environments
   controlled by touch sensors, reflecting activities in Lab environment.
 * **Aim**: Provide visual feedback using dynamic lighting to encourage user
   experimentation and exploration with IoT.
-<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Rotated Image" align="right" width=200>
+<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Rotated Image" align="right">
 
 ## Interaction Mode
 The general idea is to use two touchpads to control the chrono lumina, which reflects the current thinking in mind.
