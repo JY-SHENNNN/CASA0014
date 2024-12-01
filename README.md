@@ -1,5 +1,5 @@
 # CASA0014
-<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg">
+<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" width="300" height="300" align="right">
 
 This is used for CASA0014 Connected Environments
 
