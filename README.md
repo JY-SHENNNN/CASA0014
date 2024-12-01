@@ -8,7 +8,21 @@ The Chrono Lumina light enhances user interaction with IoT systems by using touc
   <img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Right Image" width="400">
 </div>
 
+## Inspiration
+* To enhance user interaction with the IoT system, aimed to select a sensor that is both intuitive and meaningful for users. Touchpads provide a natural and effortless way to interact, making them easy to use without requiring prior training. Their ability to detect various gestures, such as taps, swipes, and long presses, adds a layer of interactivity that aligns well with the dynamic nature of IoT systems. This versatility not only simplifies user engagement but also fosters a deeper connection with the system, allowing users to focus on exploration and creativity. Inspired by the need for an accessible and responsive interface, I chose the touchpad as the core input method for this project.
+* During the tour in science museum, environmental lighting plays a crucial role in creating a strong sense of immersive experience. Each exhibit is complemented by unique lighting, designed to evoke specific emotions and resonate with the story it tells. Just as every exhibit conveys a distinct narrative, lighting brings out its essence, allowing viewers to connect emotionally. This concept inspired me to use dynamic lighting in my project, reflecting user interactions and creating an environment where each action or idea reveals a unique visual response, much like how exhibits in the museum reveal their stories through light.
 
+## Equipment
+* Touchpad TTP223B
+* Arduino MKR1010
+* Jump wires
+
+## System architecture
+Touch Sensors (D2, D3) ->
+Arduino MKR1010 WiFi ->
+WiFi -> MQTT Broker -> Visualized Lights (Color, Brightness)
+![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/flowchart.png)
+![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/electronicCir.png)
 
 ## Interaction Mode
 The general idea is to use two touchpads to control the chrono lumina, which reflects the current thinking in mind.
@@ -22,22 +36,8 @@ The general idea is to use two touchpads to control the chrono lumina, which ref
   - from 2 to 1: decrease brightness
   - from 1 to 2: increase brightness
 
-## Inspiration
-- science museum environmental light -> stong sense of immersive experience
-- differnet displayed item with differnt environmental lights -> creating emotional resonance
-Every exhibit has a different story, just as our own experiences reveal different ideas
 
-## Equipment
-* Touchpad TTP223B
-* Arduino MKR1010
-* Jump wires
 
-## System architecture
-Touch Sensors (D2, D3) ->
-Arduino MKR1010 WiFi ->
-WiFi -> MQTT Broker -> Visualized Lights (Color, Brightness)
-![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/flowchart.png)
-![](https://github.com/JY-SHENNNN/CASA0014/blob/main/src/electronicCir.png)
 
 ## Reference
 1. The electronic graph pruduced by Fritzing
