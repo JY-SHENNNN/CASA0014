@@ -4,8 +4,8 @@
 * **Aim**: Enhance user interaction with IoT system through Chrono Lumina light, controlled by touch sensors, reflecting thinking activities in Lab environment.
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
-  <img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Left Image" width="300">
-  <img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Right Image" width="300">
+  <img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Left Image" width="400">
+  <img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/finalenclo.jpg" alt="Right Image" width="400">
 </div>
 
 
