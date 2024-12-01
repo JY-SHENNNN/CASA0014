@@ -1,7 +1,7 @@
 # CASA0014 
 
 ## Interact with Internet of Things (Overview)
-* **Aim**: Enhance user interaction with IoT system through Chrono Lumina light, controlled by touch sensors, reflecting thinking activities in Lab environment.
+The Chrono Lumina light enhances user interaction with IoT systems by using touch sensors for intuitive control, creating dynamic lighting that reflects real-time activities in the lab. This responsive system encourages experimentation and creativity, fostering engagement and exploration while promoting a collaborative and innovative environment.
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Left Image" width="400">
