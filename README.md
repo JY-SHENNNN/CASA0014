@@ -1,6 +1,6 @@
 # CASA0014
 This is used for CASA0014 Connected Environments
-<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Image" height="50" align="right">
+<img src="https://github.com/JY-SHENNNN/CASA0014/blob/main/src/allchronoLumina.jpg" alt="Image" height="500" align="right">
 
 ## Interact with Internet of Things (Overview)
 * **Objective**: Enhance user interaction with IoT system through Chrono Lumina light,
