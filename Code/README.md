@@ -8,7 +8,5 @@ After these three individual parts, it combines to a completed version, through 
 
 # Instruction
 The corresponding filename shows the related code:
-* `touchdetect01` and `touchpad00` are used to generate the touch data
-*  `connectLumina` and `arduino_secrets.h` are used to connect wifi
-*  `test` is the first combined script to test if the color of the Chrono Lumina can be changed through the code
-*  `version00`-`version03` are all the scipts used for integration. `version03` are the final integrated version 
+* `12ColorCircuit` is the code for the 12-color LED ring
+*   `version03` is the final integrated version code 
