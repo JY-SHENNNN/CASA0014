@@ -1,5 +1,9 @@
 # CASA0014 
 
+
+https://github.com/user-attachments/assets/a73fa6aa-9c91-4124-bc7d-2995820d4178
+
+
 ## Interact with Internet of Things (Overview)
 The Chrono Lumina light enhances user interaction with IoT systems by using touch sensors for intuitive control, creating dynamic lighting that reflects real-time activities in the lab. This responsive system encourages experimentation and creativity, fostering engagement and exploration while promoting a collaborative and innovative environment.
 
